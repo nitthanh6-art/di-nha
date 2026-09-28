@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Our Little Date 💗</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap');
+
+  *{box-sizing:border-box}
+  html,body{margin:0;min-height:100%;font-family:"VT323",monospace}
+  body{
+    background:#160b18;
+    display:flex;justify-content:center;align-items:center;
+    min-height:100vh;overflow:hidden;
+  }
+  .phone{
+    width:min(100vw,520px);height:min(100vh,900px);
+    position:relative;overflow:hidden;
+    background:
+      radial-gradient(circle at 20% 18%,rgba(255,255,255,.22) 0 2px,transparent 3px),
+      radial-gradient(circle at 80% 25%,rgba(255,255,255,.20) 0 2px,transparent 3px),
+      linear-gradient(#ef91b7 0%,#f3a3c3 45%,#df5d96 100%);
+    background-size:120px 120px,160px 160px,100% 100%;
+    border:7px solid #29162a;border-radius:20px;
+    box-shadow:0 0 0 3px #5c2948,0 25px 70px rgba(0,0,0,.5);
+  }
+  .screen{position:absolute;inset:0;padding:34px 24px 26px;display:none;flex-direction:column;align-items:center;text-align:center}
+  .screen.active{display:flex;animation:fade .45s ease}
+  @keyframes fade{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+  .clouds{position:absolute;left:-5%;right:-5%;bottom:-2px;height:145px;pointer-events:none;opacity:.85}
+  .clouds:before,.clouds:after{
+    content:"";position:absolute;bottom:30px;width:190px;height:75px;
+    background:#fff0f7;border:3px solid rgba(180,50,100,.2);
+    border-radius:50% 50% 10% 10%;
+  }
+  .clouds:before{left:-30px;box-shadow:75px 18px 0 4px #fff0f7,145px 4px 0 -2px #fff0f7}
+  .clouds:after{right:-35px;box-shadow:-75px 18px 0 4px #fff0f7,-145px 4px 0 -2px #fff0f7}
+  .mountains{
+    position:absolute;bottom:74px;left:0;right:0;height:105px;opacity:.45;
+    background:
+      linear-gradient(135deg,transparent 35%,#d54c89 36% 55%,transparent 56%) 0 30px/180px 100px repeat-x;
+  }
+  .sparkle{position:absolute;color:#fff;font-size:25px;animation:twinkle 1.8s infinite alternate}
+  .s1{left:8%;top:28%}.s2{right:8%;top:34%;animation-delay:.5s}.s3{left:14%;top:56%;animation-delay:1s}.s4{right:15%;top:63%;animation-delay:.2s}
+  @keyframes twinkle{to{opacity:.3;transform:scale(.7) rotate(15deg)}}
+
+  .pixel-card{
+    width:170px;height:170px;margin:18px auto 25px;
+    background:#29162a;border:5px solid #fff4fa;border-radius:18px;
+    box-shadow:0 0 0 4px #bd3169,8px 8px 0 rgba(120,25,70,.28);
+    display:grid;place-items:center;position:relative;z-index:2;
+  }
+  .cat{font-size:86px;filter:drop-shadow(3px 3px 0 #c13b70);line-height:1}
+  .couple{font-size:82px;background:#fff8fb;color:#9b3b63}
+  .title{
+    z-index:2;color:#fff;font-family:"Press Start 2P",monospace;
+    font-size:clamp(22px,6vw,36px);line-height:1.35;
+    text-shadow:4px 4px 0 #a91f59, -1px -1px 0 #a91f59;
+    max-width:440px;margin:0 0 24px;
+  }
+  .subtitle{z-index:2;color:#7b214b;font-size:25px;margin:-5px 0 22px}
+  .btn-row{display:flex;gap:20px;justify-content:center;z-index:3;flex-wrap:wrap}
+  button{
+    font-family:"VT323",monospace;font-size:28px;cursor:pointer;
+    border:3px solid #c42f69;background:#fff5fa;color:#9d234f;
+    padding:8px 28px;min-width:110px;border-radius:7px;
+    box-shadow:0 5px 0 #9d234f;transition:.15s;
+  }
+  button:hover{transform:translateY(-2px)}
+  button:active{transform:translateY(3px);box-shadow:0 2px 0 #9d234f}
+  .yes{background:#df3977;color:white;border-color:#fff;box-shadow:0 5px 0 #921f50}
+  .small-note{z-index:2;color:#8d2852;font-size:22px;margin-top:17px;min-height:25px}
+  .continue{margin-top:8px;min-width:245px}
+
+  .choice-grid{
+    width:100%;max-width:420px;display:grid;grid-template-columns:1fr 1fr;
+    gap:13px;z-index:3;margin-top:5px;
+  }
+  .choice{font-size:22px;padding:10px 6px;min-width:0}
+  .choice.selected{background:#df3977;color:#fff;box-shadow:0 5px 0 #8e204c}
+  .lock{margin-top:22px;background:#cfc9cb;color:#777;border-color:#888;box-shadow:0 5px 0 #777}
+  .lock.ready{background:#fff5fa;color:#9d234f;border-color:#c42f69;box-shadow:0 5px 0 #9d234f}
+
+  .date-box{
+    z-index:3;width:100%;max-width:380px;background:#fff9fc;
+    border:3px solid #c42f69;padding:18px 15px;text-align:left;
+    color:#6e2745;font-size:24px;line-height:1.45;box-shadow:7px 7px 0 rgba(130,25,70,.18)
+  }
+  .date-box strong{color:#b32059}
+  .letter{
+    z-index:3;width:100%;max-width:420px;background:#fffafc;
+    border:4px solid #fff;outline:3px solid #c42f69;
+    box-shadow:8px 8px 0 rgba(130,25,70,.2);padding:0;
+    color:#542037;text-align:left;position:relative;margin-top:25px
+  }
+  .letter-head{background:#df5b89;color:white;padding:11px 15px;font-size:23px;border-bottom:3px solid #c42f69}
+  .letter-body{padding:25px 22px;font-size:26px;line-height:1.25;min-height:390px}
+  .letter-body p{margin:0 0 22px}
+  .signature{text-align:right;margin-top:35px;color:#a62859}
+  .heart-rain{position:absolute;inset:0;pointer-events:none;overflow:hidden;z-index:5}
+  .heart{position:absolute;top:-40px;color:#fff;font-size:20px;animation:fall linear forwards}
+  @keyframes fall{to{transform:translateY(950px) rotate(360deg);opacity:0}}
+
+  .back{position:absolute;left:16px;top:14px;min-width:0;padding:3px 12px;font-size:20px;z-index:10}
+  .hint{font-size:18px;color:#7e234a;z-index:3;margin-top:8px}
+  input[type=date]{
+    z-index:3;width:100%;max-width:300px;font:26px "VT323",monospace;
+    padding:8px 12px;border:3px solid #c42f69;border-radius:6px;
+    background:#fff8fb;color:#722344;margin-bottom:20px;
+  }
+  .tiny{font-size:18px;color:#7b214b;z-index:3;margin-top:14px}
+</style>
+</head>
+<body>
+<div class="phone">
+
+  <section class="screen active" id="home">
+    <div class="sparkle s1">✦</div><div class="sparkle s2">✧</div><div class="sparkle s3">✦</div><div class="sparkle s4">✧</div>
+    <div class="pixel-card"><div class="cat">🐱</div></div>
+    <h1 class="title">BẠN CÓ MUỐN<br>ĐI CHƠI VỚI MÌNH KHÔNG?</h1>
+    <div class="btn-row">
+      <button class="yes" onclick="sayYes()">CÓ ♡</button>
+      <button onclick="sayNo()">KHÔNG</button>
+    </div>
+    <div class="small-note" id="noText"></div>
+    <div class="mountains"></div><div class="clouds"></div>
+  </section>
+
+  <section class="screen" id="yes">
+    <div class="pixel-card"><div class="couple">🧸💗🐰</div></div>
+    <h1 class="title">YAY!</h1>
+    <div class="subtitle">Mình vui quá vì bạn đã đồng ý.</div>
+    <button class="continue" onclick="show('date')">BẤM ĐỂ TIẾP TỤC →</button>
+    <div class="mountains"></div><div class="clouds"></div>
+  </section>
+
+  <section class="screen" id="date">
+    <button class="back" onclick="show('yes')">←</button>
+    <div class="pixel-card" style="width:145px;height:145px"><div class="couple" style="font-size:65px">🐻💗🐰</div></div>
+    <h1 class="title" style="font-size:25px">CHỌN NGÀY ĐI CHƠI</h1>
+    <input type="date" id="dateInput">
+    <div class="hint">Chọn một ngày để chúng ta đi chơi nhé ♡</div>
+    <button class="continue" onclick="show('activity')">TIẾP THEO →</button>
+    <div class="mountains"></div><div class="clouds"></div>
+  </section>
+
+  <section class="screen" id="activity">
+    <button class="back" onclick="show('date')">←</button>
+    <div class="pixel-card" style="width:125px;height:125px"><div class="couple" style="font-size:58px">🐰</div></div>
+    <h1 class="title" style="font-size:22px">BẠN MUỐN ĐI ĐÂU / LÀM GÌ?</h1>
+    <div class="choice-grid">
+      <button class="choice" onclick="pick(this,'ĐI ĂN TỐI')">ĐI ĂN TỐI</button>
+      <button class="choice" onclick="pick(this,'XEM PHIM')">XEM PHIM</button>
+      <button class="choice" onclick="pick(this,'CÀ PHÊ & ĐI DẠO')">CÀ PHÊ & ĐI DẠO</button>
+      <button class="choice" onclick="pick(this,'ĐI DÃ NGOẠI')">ĐI DÃ NGOẠI</button>
+      <button class="choice" onclick="pick(this,'CHƠI GOLF')">CHƠI GOLF</button>
+      <button class="choice" onclick="pick(this,'BẤT NGỜ MÌNH NHÉ')">BẤT NGỜ MÌNH NHÉ</button>
+    </div>
+    <button class="lock" id="lockBtn" onclick="finish()">CHỐT KÈO 🔒</button>
+    <div class="mountains"></div><div class="clouds"></div>
+  </section>
+
+  <section class="screen" id="final">
+    <div class="pixel-card" style="width:175px;height:175px"><div class="couple">🧸💗🐰</div></div>
+    <h1 class="title" style="font-size:25px">ĐI CHƠI NHA! 💗</h1>
+    <div class="date-box">
+      <div>NGÀY: <strong id="finalDate">—</strong></div>
+      <div>HOẠT ĐỘNG: <strong id="finalActivity">—</strong></div>
+    </div>
+    <button class="continue" onclick="show('letter')">OPEN YOUR KHÔNGTE 💌</button>
+    <div class="mountains"></div><div class="clouds"></div>
+  </section>
+
+  <section class="screen" id="letter">
+    <button class="back" onclick="show('final')">←</button>
+    <div class="letter">
+      <div class="letter-head">♥ thu_gui_ban.txt</div>
+      <div class="letter-body">
+        <p>Bạn thật sự rất đáng yêu, dù thế nào đi nữa. Đừng để ai nói với bạn điều ngược lại nhé!</p>
+        <p>Bạn khiến những ngày bình thường cũng trở nên thật đặc biệt.</p>
+        <p>Hôm nay và mỗi ngày sau này, mình đều trân trọng bạn và chúng ta.</p>
+        <p class="signature">Yêu bạn,<br><strong>người đặc biệt của bạn ♡</strong></p>
+      </div>
+    </div>
+    <button class="continue" onclick="restart()">CHƠI LẠI ↻</button>
+    <div class="mountains"></div><div class="clouds"></div>
+  </section>
+
+  <div class="heart-rain" id="heartRain"></div>
+</div>
+
+<script>
+  let activity = "";
+
+  function show(id){
+    document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+  }
+
+  function sayYes(){
+    heartRain();
+    setTimeout(()=>show('yes'),250);
+  }
+
+  let noCount=0;
+  function sayNo(){
+    noCount++;
+    const messages=[
+      "Bạn chắc chứ? 🥺",
+      "Thật sự chắc chắn sao? 💔",
+      "Suy nghĩ lại nha... 🌷",
+      "Nút CÓ ở ngay đó mà 👉💗",
+      "Được rồi... mình sẽ chờ 😭"
+    ];
+    document.getElementById('noText').textContent=messages[Math.min(noCount-1,messages.length-1)];
+    const btn=document.querySelector('#home .btn-row button:last-child');
+    btn.style.transform=`translate(${Math.random()*30-15}px,${Math.random()*18-9}px)`;
+  }
+
+  function pick(btn,name){
+    document.querySelectorAll('.choice').forEach(b=>b.classList.remove('selected'));
+    btn.classList.add('selected');
+    activity=name;
+    document.getElementById('lockBtn').classList.add('ready');
+  }
+
+  function finish(){
+    if(!activity){
+      document.getElementById('lockBtn').animate(
+        [{transform:'translateX(-5px)'},{transform:'translateX(5px)'},{transform:'translateX(0)'}],
+        {duration:250}
+      );
+      return;
+    }
+    const d=document.getElementById('dateInput').value;
+    document.getElementById('finalDate').textContent=d ? new Date(d+'T00:00:00').toLocaleDateString('en-US',{weekday:'short',month:'long',day:'numeric',year:'numeric'}) : 'Một ngày đặc biệt';
+    document.getElementById('finalActivity').textContent=activity;
+    heartRain();
+    setTimeout(()=>show('final'),300);
+  }
+
+  function heartRain(){
+    const box=document.getElementById('heartRain');
+    for(let i=0;i<22;i++){
+      const h=document.createElement('span');
+      h.className='heart';
+      h.textContent=['♥','♡','✦','💗'][Math.floor(Math.random()*4)];
+      h.style.left=Math.random()*100+'%';
+      h.style.animationDuration=(2.2+Math.random()*2)+'s';
+      h.style.animationDelay=Math.random()*.8+'s';
+      box.appendChild(h);
+      setTimeout(()=>h.remove(),5000);
+    }
+  }
+
+  function restart(){
+    activity="";
+    document.getElementById('dateInput').value="";
+    document.querySelectorAll('.choice').forEach(b=>b.classList.remove('selected'));
+    document.getElementById('lockBtn').classList.remove('ready');
+    document.getElementById('noText').textContent="";
+    show('home');
+  }
+
+  // Default date: one week from today
+  const d=new Date(); d.setDate(d.getDate()+7);
+  document.getElementById('dateInput').value=d.toISOString().slice(0,10);
+</script>
+</body>
+</html>
